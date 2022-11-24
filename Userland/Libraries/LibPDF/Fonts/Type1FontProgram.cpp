@@ -42,6 +42,7 @@ enum ExtendedCommand {
     VStem3,
     HStem3,
     Seac = 6,
+    Sbw,
     Div = 12,
     CallOtherSubr = 16,
     Pop,
@@ -410,6 +411,18 @@ PDFErrorOr<Type1FontProgram::Glyph> Type1FontProgram::parse_glyph(ReadonlyBytes 
                     auto adx = pop();
                     // auto asb = pop();
                     state.glyph.set_accented_character(AccentedCharacter { (u8)bchar, (u8)achar, adx, ady });
+                    state.sp = 0;
+                    break;
+                }
+
+                case Sbw: {
+                    // FIXME: Glyphs don't store vertical width
+                    [[maybe_unused]] auto wy = pop();
+                    auto wx = pop();
+                    auto sby = pop();
+                    auto sbx = pop();
+                    state.glyph.set_width(wx);
+                    point = { sbx, sby };
                     state.sp = 0;
                     break;
                 }
